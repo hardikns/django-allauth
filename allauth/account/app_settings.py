@@ -319,7 +319,7 @@ class AppSettings(object):
     def EMAILADDRESS_MODEL(self):
         from django.apps import apps as django_apps
         from django.core.exceptions import ImproperlyConfigured
-        model_name = self._setting('EMAILADDRESS_MODEL', 'account.EmailAddressLocal')
+        model_name = self._setting('EMAILADDRESS_MODEL', 'account.EmailAddress')
         try:
             return django_apps.get_model(model_name, require_ready=False)
         except ValueError:

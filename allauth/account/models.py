@@ -74,14 +74,9 @@ class AbstractEmailAddress(models.Model):
             if confirm:
                 self.send_confirmation(request)
 
-class EmailAddressLocal(AbstractEmailAddress):
+class EmailAddress(AbstractEmailAddress):
     class Meta(AbstractEmailAddress.Meta):
-        db_table='account_emailaddress'
-        default_related_name = 'emailaddress_set'
-        abstract = False
-
-
-EmailAddress = app_settings.EMAILADDRESS_MODEL
+        swappable = 'ACCOUNT_EMAILADDRESS_MODEL'
 
 
 @python_2_unicode_compatible
