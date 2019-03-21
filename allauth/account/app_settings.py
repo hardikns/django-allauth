@@ -315,6 +315,20 @@ class AppSettings(object):
                 ret = []
         return ret
 
+    @property
+    def EMAILADDRESS_MODEL(self):
+        from django.apps import apps as django_apps
+        from django.core.exceptions import ImproperlyConfigured
+        model_name = self._setting('EMAILADDRESS_MODEL', 'account.EmailAddressLocal')
+        try:
+            return django_apps.get_model(model_name, require_ready=False)
+        except ValueError:
+            raise ImproperlyConfigured("ACCOUNT_EMAILADDRESS_MODEL must be of the form 'app_label.model_name'")
+        except LookupError:
+            raise ImproperlyConfigured(
+                "ACCOUNT_EMAILADDRESS_MODEL refers to model '%s' that has not been installed" % model_name
+            )
+
 
 # Ugly? Guido recommends this himself ...
 # http://mail.python.org/pipermail/python-ideas/2012-May/014969.html

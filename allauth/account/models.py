@@ -17,7 +17,7 @@ from .utils import user_email
 
 
 @python_2_unicode_compatible
-class EmailAddress(models.Model):
+class AbstractEmailAddress(models.Model):
 
     user = models.ForeignKey(allauth_app_settings.USER_MODEL,
                              verbose_name=_('user'),
@@ -31,6 +31,7 @@ class EmailAddress(models.Model):
     objects = EmailAddressManager()
 
     class Meta:
+        abstract = True
         verbose_name = _("email address")
         verbose_name_plural = _("email addresses")
         if not app_settings.UNIQUE_EMAIL:
@@ -72,6 +73,15 @@ class EmailAddress(models.Model):
             self.save()
             if confirm:
                 self.send_confirmation(request)
+
+class EmailAddressLocal(AbstractEmailAddress):
+    class Meta(AbstractEmailAddress.Meta):
+        db_table='account_emailaddress'
+        default_related_name = 'emailaddress_set'
+        abstract = False
+
+
+EmailAddress = app_settings.EMAILADDRESS_MODEL
 
 
 @python_2_unicode_compatible
