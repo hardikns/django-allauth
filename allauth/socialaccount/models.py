@@ -10,8 +10,7 @@ from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 import allauth.app_settings
-from allauth.account.models import EmailAddress
-from allauth.account.utils import get_next_redirect_url, setup_user_email
+from allauth.account.utils import get_next_redirect_url, setup_user_email, get_email_address_model
 from allauth.utils import get_user_model
 
 from . import app_settings, providers
@@ -19,6 +18,7 @@ from ..utils import get_request_param
 from .adapter import get_adapter
 from .fields import JSONField
 
+EmailAddress = get_email_address_model()
 
 class SocialAppManager(models.Manager):
     def get_current(self, provider, request=None):

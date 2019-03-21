@@ -20,7 +20,6 @@ from django.utils.timezone import now
 
 from allauth.account.forms import BaseSignupForm, SignupForm
 from allauth.account.models import (
-    EmailAddress,
     EmailConfirmation,
     EmailConfirmationHMAC,
 )
@@ -36,8 +35,10 @@ from .utils import (
     url_str_to_user_pk,
     user_pk_to_url_str,
     user_username,
+    get_email_address_model
 )
 
+EmailAddress = get_email_address_model()
 
 test_username_validators = [
     validators.RegexValidator(

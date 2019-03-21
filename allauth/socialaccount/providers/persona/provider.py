@@ -3,7 +3,7 @@ import json
 from django.template.loader import render_to_string
 from django.utils.html import escapejs
 
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount.providers.base import Provider, ProviderAccount
 
 
@@ -35,7 +35,7 @@ class PersonaProvider(Provider):
         return dict(email=data['email'])
 
     def extract_email_addresses(self, data):
-        ret = [EmailAddress(email=data['email'],
+        ret = [get_email_address_model()(email=data['email'],
                             verified=True,
                             primary=True)]
         return ret

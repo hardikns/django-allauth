@@ -1,5 +1,5 @@
 """Customise Provider classes for Eventbrite API v3."""
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount.providers.base import ProviderAccount
 from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
 
@@ -50,7 +50,7 @@ class EventbriteProvider(OAuth2Provider):
     def extract_email_addresses(self, data):
         addresses = []
         for email in data.get("emails", []):
-            addresses.append(EmailAddress(email=email.get("email"),
+            addresses.append(get_email_address_model()(email=email.get("email"),
                                           verified=email.get("verfified"),
                                           primary=email.get("primary")))
 

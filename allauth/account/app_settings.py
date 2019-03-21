@@ -317,17 +317,7 @@ class AppSettings(object):
 
     @property
     def EMAILADDRESS_MODEL(self):
-        from django.apps import apps as django_apps
-        from django.core.exceptions import ImproperlyConfigured
-        model_name = self._setting('EMAILADDRESS_MODEL', 'account.EmailAddress')
-        try:
-            return django_apps.get_model(model_name, require_ready=False)
-        except ValueError:
-            raise ImproperlyConfigured("ACCOUNT_EMAILADDRESS_MODEL must be of the form 'app_label.model_name'")
-        except LookupError:
-            raise ImproperlyConfigured(
-                "ACCOUNT_EMAILADDRESS_MODEL refers to model '%s' that has not been installed" % model_name
-            )
+        return self._setting('EMAILADDRESS_MODEL', 'account.EmailAddress')
 
 
 # Ugly? Guido recommends this himself ...

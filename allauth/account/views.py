@@ -27,7 +27,7 @@ from .forms import (
     SignupForm,
     UserTokenForm,
 )
-from .models import EmailAddress, EmailConfirmation, EmailConfirmationHMAC
+from .models import EmailConfirmation, EmailConfirmationHMAC
 from .utils import (
     complete_signup,
     get_login_redirect_url,
@@ -37,8 +37,10 @@ from .utils import (
     perform_login,
     sync_user_email_addresses,
     url_str_to_user_pk,
+    get_email_address_model
 )
 
+EmailAddress = get_email_address_model()
 
 INTERNAL_RESET_URL_KEY = "set-password"
 INTERNAL_RESET_SESSION_KEY = "_password_reset_key"

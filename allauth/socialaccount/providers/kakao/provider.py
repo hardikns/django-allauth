@@ -1,4 +1,4 @@
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount.providers.base import ProviderAccount
 from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
 
@@ -39,7 +39,7 @@ class KakaoProvider(OAuth2Provider):
             verified = data.get('is_email_verified')
             # data['is_email_verified'] imply the email address is
             # verified
-            ret.append(EmailAddress(email=email,
+            ret.append(get_email_address_model()(email=email,
                                     verified=verified,
                                     primary=True))
         return ret

@@ -18,7 +18,6 @@ from ..utils import (
 )
 from .adapter import get_adapter
 from .app_settings import AuthenticationMethod
-from .models import EmailAddress
 from .utils import (
     filter_users_by_email,
     get_user_model,
@@ -29,8 +28,10 @@ from .utils import (
     user_email,
     user_pk_to_url_str,
     user_username,
+    get_email_address_model,
 )
 
+EmailAddress = get_email_address_model()
 
 class EmailAwarePasswordResetTokenGenerator(PasswordResetTokenGenerator):
 

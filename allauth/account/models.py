@@ -13,7 +13,7 @@ from . import app_settings, signals
 from .. import app_settings as allauth_app_settings
 from .adapter import get_adapter
 from .managers import EmailAddressManager, EmailConfirmationManager
-from .utils import user_email
+from .utils import user_email, get_email_address_model
 
 
 @python_2_unicode_compatible
@@ -41,7 +41,7 @@ class AbstractEmailAddress(models.Model):
         return "%s (%s)" % (self.email, self.user)
 
     def set_as_primary(self, conditional=False):
-        old_primary = EmailAddress.objects.get_primary(self.user)
+        old_primary = get_email_address_model().objects.get_primary(self.user)
         if old_primary:
             if conditional:
                 return False
@@ -82,7 +82,7 @@ class EmailAddress(AbstractEmailAddress):
 @python_2_unicode_compatible
 class EmailConfirmation(models.Model):
 
-    email_address = models.ForeignKey(EmailAddress,
+    email_address = models.ForeignKey(app_settings.EMAILADDRESS_MODEL,
                                       verbose_name=_('e-mail address'),
                                       on_delete=models.CASCADE)
     created = models.DateTimeField(verbose_name=_('created'),
@@ -144,6 +144,7 @@ class EmailConfirmationHMAC:
 
     @classmethod
     def from_key(cls, key):
+        EmailAddress = get_email_address_model()
         try:
             max_age = (
                 60 * 60 * 24 * app_settings.EMAIL_CONFIRMATION_EXPIRE_DAYS)

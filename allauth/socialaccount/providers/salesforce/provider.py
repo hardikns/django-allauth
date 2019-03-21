@@ -1,4 +1,4 @@
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount import providers
 from allauth.socialaccount.providers.base import AuthAction, ProviderAccount
 from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
@@ -42,7 +42,7 @@ class SalesforceProvider(OAuth2Provider):
 
     def extract_email_addresses(self, data):
         # a salesforce user must have an email, but it might not be verified
-        email = EmailAddress(email=data.get('email'),
+        email = get_email_address_model()(email=data.get('email'),
                              primary=True,
                              verified=data.get('email_verified'))
         return [email]

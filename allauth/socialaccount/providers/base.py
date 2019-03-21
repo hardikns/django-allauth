@@ -1,10 +1,11 @@
 from django.utils.encoding import python_2_unicode_compatible
 
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount import app_settings
 
 from ..adapter import get_adapter
 
+EmailAddress = get_email_address_model()
 
 class AuthProcess(object):
     LOGIN = 'login'

@@ -1,4 +1,4 @@
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount.providers.base import ProviderAccount
 from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
 
@@ -28,7 +28,7 @@ class NaverProvider(OAuth2Provider):
         ret = []
         email = data.get("email")
         if email:
-            ret.append(EmailAddress(email=email, verified=True, primary=True))
+            ret.append(get_email_address_model()(email=email, verified=True, primary=True))
         return ret
 
 

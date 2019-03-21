@@ -8,8 +8,7 @@ from . import app_settings
 from ..account import app_settings as account_settings
 from ..account.adapter import get_adapter as get_account_adapter
 from ..account.app_settings import EmailVerificationMethod
-from ..account.models import EmailAddress
-from ..account.utils import user_email, user_field, user_username
+from ..account.utils import user_email, user_field, user_username, get_email_address_model
 from ..utils import (
     deserialize_instance,
     email_address_exists,
@@ -17,6 +16,8 @@ from ..utils import (
     serialize_instance,
     valid_email_or_none,
 )
+
+EmailAddress = get_email_address_model()
 
 
 class DefaultSocialAccountAdapter(object):

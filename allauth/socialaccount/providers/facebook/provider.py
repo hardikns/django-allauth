@@ -9,7 +9,7 @@ from django.utils.crypto import get_random_string
 from django.utils.html import escapejs, mark_safe
 from django.utils.http import urlquote
 
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount.app_settings import QUERY_EMAIL
 from allauth.socialaccount.providers.base import (
     AuthAction,
@@ -192,7 +192,7 @@ class FacebookProvider(OAuth2Provider):
         if email:
             # data['verified'] does not imply the email address is
             # verified.
-            ret.append(EmailAddress(email=email,
+            ret.append(get_email_address_model()(email=email,
                                     verified=False,
                                     primary=True))
         return ret

@@ -124,9 +124,9 @@ def valid_email_or_none(email):
 
 def email_address_exists(email, exclude_user=None):
     from .account import app_settings as account_settings
-    from .account.models import EmailAddress
+    from .account.utils import get_email_address_model
 
-    emailaddresses = EmailAddress.objects
+    emailaddresses = get_email_address_model().objects
     if exclude_user:
         emailaddresses = emailaddresses.exclude(user=exclude_user)
     ret = emailaddresses.filter(email__iexact=email).exists()

@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from allauth.account.models import EmailAddress
+from allauth.account.utils import get_email_address_model
 from allauth.socialaccount.providers.base import ProviderAccount
 from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
 
@@ -41,7 +41,7 @@ class UntappdProvider(OAuth2Provider):
         )
 
     def extract_email_addresses(self, data):
-        ret = [EmailAddress(
+        ret = [get_email_address_model()(
             email=data['response']['user']['settings']['email_address'],
             verified=True,
             primary=True

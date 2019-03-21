@@ -2,8 +2,10 @@ from django.contrib import admin
 
 from . import app_settings
 from .adapter import get_adapter
-from .models import EmailAddress, EmailConfirmation
+from .models import EmailConfirmation
+from .utils import get_email_address_model
 
+EmailAddress = get_email_address_model()
 
 class EmailAddressAdmin(admin.ModelAdmin):
     list_display = ('email', 'user', 'primary', 'verified')

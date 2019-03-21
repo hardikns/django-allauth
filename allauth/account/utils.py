@@ -132,7 +132,7 @@ def perform_login(request, user, email_verification,
     if not user.is_active:
         return adapter.respond_user_inactive(request, user)
 
-    from .models import EmailAddress
+    EmailAddress = get_email_address_model()
     has_verified_email = EmailAddress.objects.filter(user=user,
                                                      verified=True).exists()
     if email_verification == EmailVerificationMethod.NONE:
@@ -191,7 +191,7 @@ def cleanup_email_addresses(request, addresses):
     Order is important: e.g. if multiple primary e-mail addresses
     exist, the first one encountered will be kept as primary.
     """
-    from .models import EmailAddress
+    EmailAddress = get_email_address_model()
     adapter = get_adapter(request)
     # Let's group by `email`
     e2a = OrderedDict()  # maps email to EmailAddress
@@ -249,7 +249,7 @@ def setup_user_email(request, user, addresses):
     up. Only sets up, doesn't do any other handling such as sending
     out email confirmation mails etc.
     """
-    from .models import EmailAddress
+    EmailAddress = get_email_address_model()
 
     assert not EmailAddress.objects.filter(user=user).exists()
     priority_addresses = []
@@ -292,7 +292,8 @@ def send_email_confirmation(request, user, signup=False):
     a cooldown period before sending a new mail. This cooldown period
     can be configured in ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN setting.
     """
-    from .models import EmailAddress, EmailConfirmation
+    from .models import EmailConfirmation
+    EmailAddress = get_email_address_model()
 
     cooldown_period = timedelta(
         seconds=app_settings.EMAIL_CONFIRMATION_COOLDOWN
@@ -342,7 +343,7 @@ def sync_user_email_addresses(user):
     an EmailAddress record, e.g. in the case of manually created admin
     users.
     """
-    from .models import EmailAddress
+    EmailAddress = get_email_address_model()
     email = user_email(user)
     if email and not EmailAddress.objects.filter(user=user,
                                                  email__iexact=email).exists():
@@ -379,7 +380,7 @@ def filter_users_by_email(email):
     EmailAddress table, than customisable User model table. Add results
     together avoiding SQL joins and deduplicate.
     """
-    from .models import EmailAddress
+    EmailAddress = get_email_address_model()
     User = get_user_model()
     mails = EmailAddress.objects.filter(email__iexact=email)
     users = [e.user for e in mails.prefetch_related('user')]
@@ -429,3 +430,20 @@ def url_str_to_user_pk(s):
     except ValidationError:
         pk = base36_to_int(s)
     return pk
+
+email_address_model = None
+def get_email_address_model():
+    global email_address_model
+    if email_address_model:
+        return email_address_model
+    from django.apps import apps as django_apps
+    from django.core.exceptions import ImproperlyConfigured
+    try:
+        email_address_model = django_apps.get_model(app_settings.EMAILADDRESS_MODEL, require_ready=False)
+        return email_address_model
+    except ValueError:
+        raise ImproperlyConfigured("ACCOUNT_EMAILADDRESS_MODEL must be of the form 'app_label.model_name'")
+    except LookupError:
+        raise ImproperlyConfigured(
+            "ACCOUNT_EMAILADDRESS_MODEL refers to model '%s' that has not been installed" % app_settings.EMAILADDRESS_MODEL
+        )
